@@ -2,10 +2,9 @@
 
 int main()
 {
-    // 1. Start SDL (graphics system)
+    /* ---------- Init ---------- */
     SDL_Init(SDL_INIT_VIDEO);
 
-    // 2. Create a window
     SDL_Window *window = SDL_CreateWindow(
         "Pong",
         100, 100,
@@ -13,7 +12,6 @@ int main()
         0
     );
 
-    // 3. Create a renderer (this draws pixels)
     SDL_Renderer *renderer = SDL_CreateRenderer(
         window,
         -1,
@@ -23,43 +21,63 @@ int main()
     int running = 1;
     SDL_Event event;
 
-    // 4. Define Player 1 as a rectangle
+    /* ---------- Players ---------- */
     SDL_Rect player1;
-    player1.x = 30;   // distance from left
-    player1.y = 250;  // distance from top
-    player1.w = 20;   // width
-    player1.h = 100;  // height
+    player1.x = 30;
+    player1.y = 250;
+    player1.w = 20;
+    player1.h = 100;
 
     SDL_Rect player2;
-    player2.x =750;
-    player2.y =250;
+    player2.x = 750;
+    player2.y = 250;
     player2.w = 20;
     player2.h = 100;
 
-    // 5. Main loop
+    int speed = 5;
+
+    /* ---------- Main Loop ---------- */
     while (running) {
 
-        // 6. Handle events (close button)
+        /* --- Events --- */
         while (SDL_PollEvent(&event)) {
+
             if (event.type == SDL_QUIT) {
                 running = 0;
             }
+
+            if (event.type == SDL_KEYDOWN) {
+
+                if (event.key.keysym.sym == SDLK_w) {
+                    player1.y -= speed;
+                }
+
+                if (event.key.keysym.sym == SDLK_s) {
+                    player1.y += speed;
+                }
+            }
         }
 
-        // 7. Clear screen (background = black)
+        /* --- Clamp player inside window --- */
+        if (player1.y < 0) {
+            player1.y = 0;
+        }
+        if (player1.y + player1.h > 600) {
+            player1.y = 600 - player1.h;
+        }
+
+        /* --- Draw --- */
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        // 8. Draw Player 1 (white rectangle)
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderFillRect(renderer, &player1);
         SDL_RenderFillRect(renderer, &player2);
 
-        // 9. Show everything on screen
         SDL_RenderPresent(renderer);
     }
 
-    // 10. Cleanup
+    /* ---------- Cleanup ---------- */
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
