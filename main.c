@@ -55,6 +55,14 @@ int main()
                 if (event.key.keysym.sym == SDLK_s) {
                     player1.y += speed;
                 }
+
+                if (event.key.keysym.sym == SDLK_UP){
+                	player2.y -= speed;
+                }
+
+                if (event.key.keysym.sym == SDLK_DOWN){
+                	player2.y += speed;
+                }
             }
         }
 
@@ -64,6 +72,14 @@ int main()
         }
         if (player1.y + player1.h > 600) {
             player1.y = 600 - player1.h;
+        }
+
+        if (player2.y < 0){
+        	player2.y = 0;
+        }
+
+        if (player2.y + player2.h > 600){
+        	player2.y = 600 - player2.h;
         }
 
         /* --- Draw --- */
