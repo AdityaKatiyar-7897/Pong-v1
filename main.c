@@ -24,6 +24,7 @@ int main()
     /* ---------- Players ---------- */
     SDL_Rect player1 = {30, 250, 20, 100};
     SDL_Rect player2 = {750, 250, 20, 100};
+    SDL_Rect ball = {400 - 10, 300 - 10, 20 , 20};
 
     int speed = 5;
 
@@ -77,6 +78,7 @@ int main()
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderFillRect(renderer, &player1);
         SDL_RenderFillRect(renderer, &player2);
+        SDL_RenderFillRect(renderer, &ball);
 
         SDL_RenderPresent(renderer);
 
