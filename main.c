@@ -22,65 +22,53 @@ int main()
     SDL_Event event;
 
     /* ---------- Players ---------- */
-    SDL_Rect player1;
-    player1.x = 30;
-    player1.y = 250;
-    player1.w = 20;
-    player1.h = 100;
-
-    SDL_Rect player2;
-    player2.x = 750;
-    player2.y = 250;
-    player2.w = 20;
-    player2.h = 100;
+    SDL_Rect player1 = {30, 250, 20, 100};
+    SDL_Rect player2 = {750, 250, 20, 100};
 
     int speed = 5;
 
     /* ---------- Main Loop ---------- */
     while (running) {
 
-        /* --- Events --- */
+        /* --- Handle quit event only --- */
         while (SDL_PollEvent(&event)) {
-
             if (event.type == SDL_QUIT) {
                 running = 0;
             }
-
-            if (event.type == SDL_KEYDOWN) {
-
-                if (event.key.keysym.sym == SDLK_w) {
-                    player1.y -= speed;
-                }
-
-                if (event.key.keysym.sym == SDLK_s) {
-                    player1.y += speed;
-                }
-
-                if (event.key.keysym.sym == SDLK_UP){
-                	player2.y -= speed;
-                }
-
-                if (event.key.keysym.sym == SDLK_DOWN){
-                	player2.y += speed;
-                }
-            }
         }
 
-        /* --- Clamp player inside window --- */
-        if (player1.y < 0) {
+        /* --- Keyboard state (continuous movement) --- */
+        const Uint8 *keys = SDL_GetKeyboardState(NULL);
+
+        /* Player 1: W / S */
+        if (keys[SDL_SCANCODE_W]) {
+            player1.y -= speed;
+        }
+        if (keys[SDL_SCANCODE_S]) {
+            player1.y += speed;
+        }
+
+        /* Player 2: Up / Down arrows */
+        if (keys[SDL_SCANCODE_UP]) {
+            player2.y -= speed;
+        }
+        if (keys[SDL_SCANCODE_DOWN]) {
+            player2.y += speed;
+        }
+
+        /* --- Clamp Player 1 --- */
+        if (player1.y < 0)
             player1.y = 0;
-        }
-        if (player1.y + player1.h > 600) {
+
+        if (player1.y + player1.h > 600)
             player1.y = 600 - player1.h;
-        }
 
-        if (player2.y < 0){
-        	player2.y = 0;
-        }
+        /* --- Clamp Player 2 --- */
+        if (player2.y < 0)
+            player2.y = 0;
 
-        if (player2.y + player2.h > 600){
-        	player2.y = 600 - player2.h;
-        }
+        if (player2.y + player2.h > 600)
+            player2.y = 600 - player2.h;
 
         /* --- Draw --- */
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -91,6 +79,9 @@ int main()
         SDL_RenderFillRect(renderer, &player2);
 
         SDL_RenderPresent(renderer);
+
+        /* --- Slow down loop (~60 FPS) --- */
+        SDL_Delay(16);
     }
 
     /* ---------- Cleanup ---------- */
