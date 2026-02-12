@@ -86,6 +86,18 @@ int main()
             ballVelY = -ballVelY;
         }
 
+        /* --- Paddle Collision --- */
+        if (SDL_HasIntersection(&ball, &player1)) {
+            ball.x = player1.x + player1.w;
+            ballVelX = -ballVelX;
+        }
+        
+        if (SDL_HasIntersection(&ball, &player2)) {
+            ball.x = player2.x - ball.w;
+            ballVelX = -ballVelX;
+        }
+        
+
         /* --- Draw --- */
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
